@@ -19,7 +19,6 @@ function CustomerTracking() {
   const [trackingId, setTrackingId] = useState('')
   const [activeTrackingId, setActiveTrackingId] = useState<string | null>(null)
   
-  const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<maplibregl.Map | null>(null)
   const markerRef = useRef<maplibregl.Marker | null>(null)
   const routeLayerAdded = useRef<boolean>(false)
@@ -56,30 +55,8 @@ function CustomerTracking() {
     }
   }, [])
 
-  // Initialize Map
-  useEffect(() => {
-    if (!mapContainer.current || !activeTrackingId || map.current) return
-
-    map.current = new maplibregl.Map({
-      container: mapContainer.current,
-      style: 'https://demotiles.maplibre.org/style.json',
-      center: [78.9629, 20.5937], // Centered on India by default
-      zoom: 4,
-    })
-
-    map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
-
-    return () => {
-      if (map.current) {
-        map.current.remove()
-        map.current = null
-        routeLayerAdded.current = false
-      }
-    }
-  }, [activeTrackingId])
-
-  // Update vehicle position marker and draw route line
-  useEffect(() => {
+  // Helper to draw marker and route
+  const drawMarkerAndRoute = () => {
     if (!map.current || !details) return
 
     const { latitude, longitude, vehicle_registration, current_status } = details
@@ -143,7 +120,40 @@ function CustomerTracking() {
         }
       }
     }
+  }
+
+  // Update vehicle position marker and draw route line when details/route changes
+  useEffect(() => {
+    drawMarkerAndRoute()
   }, [details, routeData])
+
+  // Callback ref to initialize map when the div mounts
+  const mapContainerRef = (el: HTMLDivElement | null) => {
+    if (!el) {
+      if (map.current) {
+        map.current.remove()
+        map.current = null
+        routeLayerAdded.current = false
+      }
+      markerRef.current = null
+      return
+    }
+
+    if (map.current) return // Already initialized
+
+    map.current = new maplibregl.Map({
+      container: el,
+      style: 'https://demotiles.maplibre.org/style.json',
+      center: [78.9629, 20.5937], // Centered on India by default
+      zoom: 4,
+    })
+
+    map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
+
+    map.current.on('load', () => {
+      drawMarkerAndRoute()
+    })
+  }
 
   const handleTrackSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -285,7 +295,7 @@ function CustomerTracking() {
                     </button>
                   </CardHeader>
                   <CardContent className="p-0 h-80 relative">
-                    <div ref={mapContainer} className="w-full h-full" />
+                    <div ref={mapContainerRef} className="w-full h-full" />
                   </CardContent>
                 </Card>
 
