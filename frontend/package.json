@@ -1,0 +1,22 @@
+{
+  "name": "transitops-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tanstack start",
+    "build": "tanstack build",
+    "start": "tanstack start"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "^1.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.0.0"
+  }
+}
