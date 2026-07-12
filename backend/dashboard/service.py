@@ -91,7 +91,11 @@ class DashboardService:
         }
         
         for vehicle in vehicles:
-            status_counts[vehicle.status.value.lower()] += 1
+            key = vehicle.status.value.lower().replace(" ", "_")
+            if key in status_counts:
+                status_counts[key] += 1
+            else:
+                logger.warning(f"Unknown vehicle status key: {key}")
         
         return status_counts
 

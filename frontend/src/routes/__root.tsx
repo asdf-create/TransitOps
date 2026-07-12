@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { AppSidebar } from '../components/AppSidebar'
 import { TopBar } from '../components/TopBar'
@@ -6,7 +6,7 @@ import { GlobalSearch } from '../components/GlobalSearch'
 import { NotificationCenter } from '../components/NotificationCenter'
 import { Toaster } from 'sonner'
 
-export const Route = createFileRoute('/')({
+export const Route = createRootRoute({
   component: RootLayout,
 })
 

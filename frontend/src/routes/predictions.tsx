@@ -94,7 +94,7 @@ function Predictions() {
       <div>
         <h2 className="text-xl font-bold text-gray-100 flex items-center gap-2">
           <Brain className="w-5 h-5 text-blue-400" />
-          <span>Machine Learning Intelligence</span>
+          <span>ML Predictions</span>
         </h2>
         <p className="text-xs text-gray-400">
           Predictive analytics powered by local pre-trained XGBoost and LightGBM modules.

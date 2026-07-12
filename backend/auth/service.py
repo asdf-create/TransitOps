@@ -1,3 +1,12 @@
+import bcrypt
+# Monkeypatch bcrypt to prevent passlib ValueError crash on passwords > 72 bytes
+_original_hashpw = bcrypt.hashpw
+def _patched_hashpw(password: bytes, salt: bytes) -> bytes:
+    if len(password) > 72:
+        password = password[:72]
+    return _original_hashpw(password, salt)
+bcrypt.hashpw = _patched_hashpw
+
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone

@@ -91,7 +91,7 @@ function Assistant() {
             <Bot className="w-4.5 h-4.5" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-gray-200">Local AI Assistant</h2>
+            <h2 className="text-sm font-semibold text-gray-200">AI Assistant</h2>
             <p className="text-[10px] text-gray-400">llama.cpp • 100% Offline</p>
           </div>
         </div>
@@ -135,9 +135,11 @@ function Assistant() {
                     : 'bg-white/[0.02] border-white/[0.05] text-gray-200'
                 }`}
               >
-                <ReactMarkdown className="prose prose-invert prose-xs max-w-none">
-                  {msg.content}
-                </ReactMarkdown>
+                <div className="prose prose-invert prose-xs max-w-none text-xs text-inherit">
+                  <ReactMarkdown>
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
               </div>
             </motion.div>
           ))}
