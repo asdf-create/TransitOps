@@ -38,6 +38,11 @@ def authenticate_user(session: Session, email: str, password: str) -> Optional[U
     return user
 
 def create_user(session: Session, user_data: dict) -> User:
+    # Check for duplicate email
+    existing = session.exec(select(User).where(User.email == user_data["email"])).first()
+    if existing:
+        raise ValueError(f"User with email {user_data['email']} already exists")
+
     hashed_password = get_password_hash(user_data["password"])
     db_user = User(
         full_name=user_data["full_name"],

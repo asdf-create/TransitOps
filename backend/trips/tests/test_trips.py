@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from database.models import Vehicle, Driver, Trip, VehicleStatus, DriverStatus, TripStatus
 from trips.service import TripService
 from trips.models import TripCreate
@@ -568,20 +568,19 @@ def test_double_completion(trip_service, available_vehicle, available_driver):
 
 def test_invalid_distance(trip_service, available_vehicle, available_driver):
     """Test trip creation with invalid distance"""
-    trip_data = TripCreate(
-        source="Warehouse A",
-        destination="Warehouse B",
-        vehicle_id=available_vehicle.id,
-        driver_id=available_driver.id,
-        cargo_description="Test cargo",
-        cargo_weight=3000.0,
-        planned_distance=-100.0,
-        planned_duration=120,
-        planned_departure=datetime.now(),
-        revenue=500.0
-    )
-    
     with pytest.raises(Exception):
+        trip_data = TripCreate(
+            source="Warehouse A",
+            destination="Warehouse B",
+            vehicle_id=available_vehicle.id,
+            driver_id=available_driver.id,
+            cargo_description="Test cargo",
+            cargo_weight=3000.0,
+            planned_distance=-100.0,
+            planned_duration=120,
+            planned_departure=datetime.now(),
+            revenue=500.0
+        )
         trip_service.create_trip(trip_data)
 
 def test_missing_destination(trip_service, available_vehicle, available_driver):
@@ -648,7 +647,8 @@ def test_tracking_id_generation(trip_service, available_vehicle, available_drive
 
 def test_eta_calculation(trip_service, available_vehicle, available_driver):
     """Test ETA calculation"""
-    departure_time = datetime.now(timezone.utc)
+    # Use naive datetime to match SQLite storage (no timezone info)
+    departure_time = datetime.now()
     trip_data = TripCreate(
         source="Warehouse A",
         destination="Warehouse B",

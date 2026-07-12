@@ -15,6 +15,12 @@ class TripService:
         return f"TRK-{''.join(random.choices(string.digits, k=4))}"
 
     def create_trip(self, trip_data: TripCreate) -> Trip:
+        # Validate source and destination are not empty
+        if not trip_data.source or not trip_data.source.strip():
+            raise ValueError("Trip source cannot be empty")
+        if not trip_data.destination or not trip_data.destination.strip():
+            raise ValueError("Trip destination cannot be empty")
+
         # Validate vehicle
         vehicle = self.session.get(Vehicle, trip_data.vehicle_id)
         if not vehicle:
@@ -26,7 +32,7 @@ class TripService:
         
         # Business Rule: Vehicle already on trip cannot be assigned
         if vehicle.status == VehicleStatus.ON_TRIP:
-            raise ValueError("Vehicle is already on a trip")
+            raise ValueError(f"Vehicle status is {VehicleStatus.ON_TRIP.name} and cannot be assigned")
         
         # Business Rule: Cargo weight must not exceed vehicle capacity
         if trip_data.cargo_weight > vehicle.max_load_capacity:
@@ -39,15 +45,15 @@ class TripService:
         
         # Business Rule: Suspended drivers cannot be assigned
         if driver.status == DriverStatus.SUSPENDED:
-            raise ValueError("Driver is suspended and cannot be assigned")
+            raise ValueError(f"Driver status is {DriverStatus.SUSPENDED.name} and cannot be assigned")
         
         # Business Rule: Expired license check
-        if driver.license_expiry < datetime.now(timezone.utc):
+        if driver.license_expiry < datetime.now():
             raise ValueError("Driver's license has expired")
         
         # Business Rule: Driver already on trip cannot be assigned
         if driver.status == DriverStatus.ON_TRIP:
-            raise ValueError("Driver is already on a trip")
+            raise ValueError(f"Driver status is {DriverStatus.ON_TRIP.name} and cannot be assigned")
         
         # Create trip with historical snapshots
         tracking_id = self.generate_tracking_id()

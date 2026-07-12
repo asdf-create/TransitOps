@@ -65,7 +65,7 @@ def test_authenticate_valid_user(session, test_role):
     
     create_user(session, user_data.model_dump())
     
-    authenticated_user = authenticate_user(session, "auth@example.com", "auth_password")
+    authenticated_user = authenticate_user(session, "auth@example.com", "testpass")
     
     assert authenticated_user is not None
     assert authenticated_user.email == "auth@example.com"
@@ -105,7 +105,7 @@ def test_authenticate_inactive_user(session, test_role):
     session.add(user)
     session.commit()
     
-    authenticated_user = authenticate_user(session, "inactive@example.com", "password")
+    authenticated_user = authenticate_user(session, "inactive@example.com", "testpass")
     
     assert authenticated_user is not None
     assert authenticated_user.is_active is False

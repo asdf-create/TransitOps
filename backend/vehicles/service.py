@@ -8,6 +8,10 @@ class VehicleService:
         self.session = session
 
     def create_vehicle(self, vehicle_data: VehicleCreate) -> Vehicle:
+        # Validate registration number is not empty
+        if not vehicle_data.registration_number or not vehicle_data.registration_number.strip():
+            raise ValueError("Registration number cannot be empty")
+
         # Check if registration number already exists
         existing = self.session.exec(
             select(Vehicle).where(Vehicle.registration_number == vehicle_data.registration_number)

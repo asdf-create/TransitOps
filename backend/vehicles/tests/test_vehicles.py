@@ -49,37 +49,35 @@ def test_create_duplicate_registration(vehicle_service):
 
 def test_create_invalid_capacity(vehicle_service):
     """Test vehicle creation with invalid capacity"""
-    vehicle_data = VehicleCreate(
-        registration_number="TEST-002",
-        model="Test Model",
-        manufacturer="Test Manufacturer",
-        vehicle_type="Truck",
-        year=2024,
-        fuel_type="Diesel",
-        max_load_capacity=-100.0,
-        acquisition_cost=50000.0,
-        region="North"
-    )
-    
     with pytest.raises(Exception):
+        vehicle_data = VehicleCreate(
+            registration_number="TEST-002",
+            model="Test Model",
+            manufacturer="Test Manufacturer",
+            vehicle_type="Truck",
+            year=2024,
+            fuel_type="Diesel",
+            max_load_capacity=-100.0,
+            acquisition_cost=50000.0,
+            region="North"
+        )
         vehicle_service.create_vehicle(vehicle_data)
 
 def test_create_invalid_odometer(vehicle_service):
     """Test vehicle creation with invalid odometer"""
-    vehicle_data = VehicleCreate(
-        registration_number="TEST-003",
-        model="Test Model",
-        manufacturer="Test Manufacturer",
-        vehicle_type="Truck",
-        year=2024,
-        fuel_type="Diesel",
-        max_load_capacity=5000.0,
-        acquisition_cost=50000.0,
-        odometer=-100.0,
-        region="North"
-    )
-    
     with pytest.raises(Exception):
+        vehicle_data = VehicleCreate(
+            registration_number="TEST-003",
+            model="Test Model",
+            manufacturer="Test Manufacturer",
+            vehicle_type="Truck",
+            year=2024,
+            fuel_type="Diesel",
+            max_load_capacity=5000.0,
+            acquisition_cost=50000.0,
+            odometer=-100.0,
+            region="North"
+        )
         vehicle_service.create_vehicle(vehicle_data)
 
 def test_get_vehicle(vehicle_service):
