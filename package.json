@@ -1,0 +1,14 @@
+{
+  "name": "transitops",
+  "version": "0.1.0",
+  "description": "TransitOps - Smart Transport Operations Platform",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
