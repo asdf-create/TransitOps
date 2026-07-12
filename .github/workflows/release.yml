@@ -23,10 +23,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
+          bun-version: latest
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -40,9 +40,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install
+          bun install
           cd frontend
-          npm install
+          bun install
 
       - name: Build and Package Desktop App
         uses: tauri-apps/tauri-action@v0
@@ -54,4 +54,5 @@ jobs:
           releaseBody: 'Automatic Tauri release of TransitOps. See assets below for compiled installers.'
           releaseDraft: false
           prerelease: false
+          packageManager: bun
           args: ${{ matrix.args }}
