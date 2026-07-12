@@ -1,10 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../lib/api'
 
 export const Route = createFileRoute('/dashboard')({
   component: Dashboard,
 })
 
 function Dashboard() {
+  const { data: kpis, isLoading } = useQuery({
+    queryKey: ['dashboard-kpis'],
+    queryFn: () => api.get('/dashboard/kpis'),
+  })
+
+  if (isLoading) {
+    return (
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h2>
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h2>
@@ -20,7 +36,7 @@ function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">Total Vehicles</dt>
-                  <dd className="text-3xl font-semibold text-gray-900">--</dd>
+                  <dd className="text-3xl font-semibold text-gray-900">{kpis?.vehicles?.total || 0}</dd>
                 </dl>
               </div>
             </div>
@@ -38,7 +54,7 @@ function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">Total Drivers</dt>
-                  <dd className="text-3xl font-semibold text-gray-900">--</dd>
+                  <dd className="text-3xl font-semibold text-gray-900">{kpis?.drivers?.total || 0}</dd>
                 </dl>
               </div>
             </div>
@@ -56,7 +72,7 @@ function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">Active Trips</dt>
-                  <dd className="text-3xl font-semibold text-gray-900">--</dd>
+                  <dd className="text-3xl font-semibold text-gray-900">{kpis?.trips?.active || 0}</dd>
                 </dl>
               </div>
             </div>
@@ -74,7 +90,7 @@ function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">Fleet Utilization</dt>
-                  <dd className="text-3xl font-semibold text-gray-900">--%</dd>
+                  <dd className="text-3xl font-semibold text-gray-900">{kpis?.metrics?.fleet_utilization?.toFixed(1) || 0}%</dd>
                 </dl>
               </div>
             </div>
@@ -86,7 +102,7 @@ function Dashboard() {
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Activity</h3>
           <div className="text-gray-500 text-sm">
-            <p>Dashboard will be populated with real data from the backend API.</p>
+            <p>Dashboard is now connected to the backend API and displaying real data.</p>
           </div>
         </div>
       </div>
