@@ -152,7 +152,7 @@ class FuelLog(SQLModel, table=True):
 
 class Expense(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    vehicle_id: Optional[int] = Field(foreign_key="vehicle.id")
+    vehicle_id: Optional[int] = Field(foreign_key="vehicle.id", index=True)
     trip_id: Optional[int] = Field(foreign_key="trip.id")
     category: str
     amount: float = Field(gt=0)
@@ -161,10 +161,19 @@ class Expense(SQLModel, table=True):
 
 class Notification(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id")
+    user_id: int = Field(foreign_key="user.id", index=True)
     title: str
     message: str = Field(sa_type=Text)
     priority: Priority = Field(default=Priority.MEDIUM)
     category: str
     read: bool = Field(default=False)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class EmailLog(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    trip_id: int = Field(foreign_key="trip.id", index=True)
+    recipient_email: str
+    subject: str
+    body_html: str = Field(sa_type=Text)
+    sent_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

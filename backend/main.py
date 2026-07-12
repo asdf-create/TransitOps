@@ -15,6 +15,9 @@ from analytics.routes import router as analytics_router
 from tracking.routes import router as tracking_router
 from ai.routes import router as ai_router
 from ml.routes import router as ml_router
+from notifications.routes import router as notifications_router
+from email_service.routes import router as email_router
+from search.routes import router as search_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -48,6 +51,9 @@ app.include_router(analytics_router)
 app.include_router(tracking_router)
 app.include_router(ai_router)
 app.include_router(ml_router)
+app.include_router(notifications_router)
+app.include_router(email_router)
+app.include_router(search_router)
 
 @app.get("/health")
 def health_check():

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+from typing import Optional, List, Dict, Any
+from datetime import datetime
 
 class VehicleLocation(BaseModel):
     model_config = ConfigDict(extra='forbid')
@@ -26,3 +27,33 @@ class VehicleLocationResponse(BaseModel):
     speed: Optional[float]
     heading: Optional[float]
     status: str
+
+class TrackingDetailResponse(BaseModel):
+    tracking_id: str
+    latitude: float
+    longitude: float
+    progress_percentage: float
+    current_speed: float
+    remaining_distance: float
+    estimated_arrival: Optional[datetime]
+    current_status: str
+    driver_name: str
+    vehicle_registration: str
+    vehicle_name: str
+    source: str
+    destination: str
+    revenue: float
+
+class TrackingTimelineEvent(BaseModel):
+    status: str
+    description: str
+    timestamp: datetime
+
+class TrackingTimelineResponse(BaseModel):
+    tracking_id: str
+    events: List[TrackingTimelineEvent]
+
+class RouteGeometryResponse(BaseModel):
+    tracking_id: str
+    route_geometry: Optional[str]
+    coordinates: List[List[float]]  # GeoJSON style List of [lng, lat]

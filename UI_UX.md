@@ -1,424 +1,626 @@
-# API.md
-# TransitOps API Specification
+# UI_UX.md
+
+# TransitOps UI/UX Specification
+
 Version: 1.0
-## Overview
-The backend exposes a REST API exclusively for the desktop frontend and the local customer tracking website.
-Goals:
-* Consistent endpoint design
-* Predictable responses
-* Strong validation
-* Thin routes
-* Service-driven architecture
-Base URL:
+
+## Design Philosophy
+
+TransitOps should feel like a premium macOS application rather than a hackathon project.
+
+Design inspiration:
+
+* Apple Human Interface Guidelines
+* Linear
+* Raycast
+* Arc Browser
+* Notion
+* Stripe Dashboard
+
+The UI should communicate professionalism, speed, and clarity.
+
+---
+
+# Design Goals
+
+* Native macOS feel
+* Enterprise dashboard
+* Smooth animations
+* Minimal visual clutter
+* Excellent information hierarchy
+* Fast navigation
+* Accessible
+* Responsive
+* Dark mode first
+
+Every screen should answer:
+
+> What is happening?
+> What action should the user take next?
+
+---
+
+# Design Language
+
+Overall aesthetic:
+
+* Apple-inspired
+* Modern AI dashboard
+* Subtle glass effects
+* Soft shadows
+* Rounded corners
+* High contrast
+* Minimal gradients
+
+Avoid excessive glow or cyberpunk styling.
+
+---
+
+# Color Palette
+
+Primary:
+
+Blue
+
+Success:
+
+Green
+
+Warning:
+
+Orange
+
+Danger:
+
+Red
+
+Neutral:
+
+Slate / Gray
+
+Reserve accent colors for important actions only.
+
+---
+
+# Typography
+
+Use a clean sans-serif font.
+
+Hierarchy:
+
+* Display
+* Heading 1
+* Heading 2
+* Heading 3
+* Body
+* Caption
+
+Avoid excessive font weights.
+
+Maintain consistent spacing.
+
+---
+
+# Icons
+
+Primary:
+
+HugeIcons
+
+Fallback:
+
+Lucide
+
+Use outlined icons by default.
+
+Filled icons only for active navigation states.
+
+---
+
+# Border Radius
+
+Small
+
+Inputs
+
+Buttons
+
+Medium
+
+Cards
+
+Dialogs
+
+Large
+
+Dashboards
+
+Maps
+
+Avoid inconsistent corner radii.
+
+---
+
+# Shadows
+
+Prefer soft shadows.
+
+Avoid harsh drop shadows.
+
+Glass cards should use subtle elevation.
+
+---
+
+# Animations
+
+Use Framer Motion.
+
+Animation should communicate state changes.
+
+Never animate purely for decoration.
+
+Target duration:
+
+150–300 ms
+
+Use spring animations for:
+
+* Cards
+* Drawers
+* Dialogs
+* Sidebar
+* Map controls
+
+---
+
+# Navigation
+
+Desktop layout:
+
 ```text
-http://localhost:8000
+Sidebar
+│
+├── Dashboard
+├── Vehicles
+├── Drivers
+├── Trips
+├── Tracking
+├── Maintenance
+├── Expenses
+├── Analytics
+├── AI Assistant
+├── Notifications
+└── Settings
 ```
-No API versioning is required for this hackathon.
----
-# Response Format
-Successful responses:
-```json
-{
-  "success": true,
-  "message": "Vehicle created successfully.",
-  "data": {}
-}
-```
-Validation errors:
-```json
-{
-  "success": false,
-  "message": "Validation failed.",
-  "errors": {}
-}
-```
-Unexpected errors:
-```json
-{
-  "success": false,
-  "message": "An unexpected error occurred."
-}
-```
-Never expose stack traces.
----
-# Authentication
-## POST /auth/login
-Authenticate user.
-Request
-* Email
-* Password
-Response
-* User
-* Role
-* Authentication token/session
----
-## POST /auth/logout
-Terminate session.
----
-## GET /auth/me
-Return currently authenticated user.
----
-## POST /auth/users
-Create local user.
-Administrator only.
----
-## PATCH /auth/users/{id}
-Update user.
----
-## DELETE /auth/users/{id}
-Deactivate user.
-Prefer soft delete.
----
-# Vehicles
-## GET /vehicles
-Supports:
+
+Top bar includes:
+
 * Search
-* Filters
-* Pagination
-* Sorting
+* Theme toggle
+* Notifications
+* User profile
+
 ---
-## GET /vehicles/{id}
-Return complete vehicle details.
----
-## POST /vehicles
-Create vehicle.
-Validation:
-* Registration unique
-* Positive load capacity
-* Valid status
----
-## PATCH /vehicles/{id}
-Update vehicle.
----
-## DELETE /vehicles/{id}
-Soft delete preferred.
----
-## GET /vehicles/statistics
-Returns:
-* Fleet utilization
-* Active vehicles
-* Maintenance count
-* Average mileage
----
-# Drivers
-## GET /drivers
-List drivers.
-Supports:
-* Search
-* Filters
-* Pagination
----
-## GET /drivers/{id}
-Driver profile.
----
-## POST /drivers
-Create driver.
-Validation:
-* Unique license
-* Safety score
-* Expiry date
----
-## PATCH /drivers/{id}
-Update driver.
----
-## DELETE /drivers/{id}
-Deactivate driver.
----
-## GET /drivers/rankings
-Returns ML-enhanced driver ranking.
----
-# Trips
-## GET /trips
-List trips.
-Supports:
-* Search
-* Status filter
-* Vehicle filter
-* Driver filter
-* Date filter
----
-## GET /trips/{id}
-Trip details.
----
-## POST /trips
-Create draft trip.
-Validates:
-* Driver
-* Vehicle
-* Cargo
-* Route
-Generates:
-* Tracking ID
-* ETA
----
-## POST /trips/{id}/dispatch
-Dispatch trip.
-Automatically:
-* Updates statuses
-* Generates tracking
-* Sends notification
-* Updates dashboard
----
-## POST /trips/{id}/complete
-Complete trip.
-Automatically:
-* Updates driver
-* Updates vehicle
-* Updates analytics
-* Logs fuel
-* Calculates ROI
----
-## POST /trips/{id}/cancel
-Cancel trip.
-Restores resources.
----
-# Maintenance
-## GET /maintenance
-List records.
----
-## POST /maintenance
-Create maintenance record.
-Automatically:
-* Changes vehicle status
-* Removes vehicle from dispatch pool
----
-## PATCH /maintenance/{id}
-Update maintenance.
----
-## POST /maintenance/{id}/complete
-Close maintenance.
-Restore availability.
----
-# Fuel
-## GET /fuel
-List logs.
----
-## POST /fuel
-Create fuel log.
-Validation:
-* Positive quantity
-* Valid odometer
-* Duplicate detection
----
-# Expenses
-## GET /expenses
-List expenses.
----
-## POST /expenses
-Create expense.
-Supported categories:
-* Fuel
-* Maintenance
-* Toll
-* Parking
-* Insurance
-* Registration
-* Repairs
-* Miscellaneous
----
+
 # Dashboard
-## GET /dashboard
-Returns:
-* KPIs
-* Fleet utilization
-* Revenue
-* Cost
-* Active trips
-* Driver availability
-* Vehicle availability
-Single request should populate dashboard.
+
+This is the showcase page.
+
+Include:
+
+* KPI cards
+* Fleet status
+* Active deliveries
+* Live map
+* Revenue summary
+* Driver rankings
+* Vehicle rankings
+* AI insights
+* Recent activity
+
+The dashboard should feel alive.
+
 ---
-# Analytics
-## GET /analytics
-Returns dashboard analytics.
+
+# KPI Cards
+
+Each card should include:
+
+* Icon
+* Metric
+* Percentage change
+* Small sparkline
+* Hover animation
+
+Animated counters on initial load.
+
 ---
-## GET /analytics/revenue
-Revenue charts.
+
+# Data Tables
+
+Use shadcn Data Table.
+
+Support:
+
+* Sorting
+* Filtering
+* Pagination
+* Column visibility
+* Search
+* Bulk actions
+* Sticky header
+
+Avoid horizontal scrolling whenever possible.
+
 ---
-## GET /analytics/fuel
-Fuel efficiency.
+
+# Forms
+
+Use consistent spacing.
+
+Validation:
+
+* Inline errors
+* Success indicators
+* Required field markers
+
+Disable submit while processing.
+
 ---
-## GET /analytics/drivers
-Driver performance.
----
-## GET /analytics/vehicles
-Vehicle analytics.
----
-## GET /analytics/roi
-Vehicle ROI.
----
-## GET /analytics/export/csv
-Export analytics.
-Mandatory.
----
-## GET /analytics/export/pdf
-Optional.
----
-# Live Tracking
-## GET /tracking/{tracking_id}
-Returns:
-* Position
-* ETA
-* Progress
-* Status
-* Driver
-* Vehicle
-Used by desktop app and customer tracking page.
----
-## GET /tracking/{tracking_id}/history
-Tracking timeline.
----
-## GET /tracking/{tracking_id}/route
-Returns route geometry for MapLibre.
----
-# Customer Tracking Website
-Base URL
-```text
-http://localhost:8080/track/{tracking_id}
-```
-Uses tracking endpoints only.
-Read-only.
-No authentication required.
-Displays:
-* Live location
-* ETA
-* Driver
-* Vehicle
-* Timeline
-* Delivery progress
----
-# Notifications
-## GET /notifications
-List notifications.
----
-## PATCH /notifications/{id}/read
-Mark as read.
----
-## PATCH /notifications/read-all
-Mark all read.
----
-## DELETE /notifications/{id}
-Dismiss notification.
----
-# Email
-## POST /email/preview
-Generate preview.
----
-## POST /email/send
-Send tracking email.
-Includes:
-* Tracking link
-* ETA
-* Driver
-* Vehicle
-* Status
----
-## GET /email/history
-Email history.
----
-# AI Assistant
-## POST /ai/chat
-Request
-* User message
-Response
-* AI answer
-* Sources
-* Suggested actions (optional)
-Questions include:
-* Where is my package?
-* ETA
-* Assigned driver
-* Assigned vehicle
-* Maintenance status
-* Delivery delays
-Offline only.
-Uses llama.cpp.
----
-# Machine Learning
-## GET /ml/predict-delay/{trip_id}
-Returns:
-* Predicted delay
-* Confidence
----
-## GET /ml/predict-maintenance/{vehicle_id}
-Returns:
-* Next maintenance estimate
-* Confidence
----
-## GET /ml/recommend-driver/{trip_id}
-Returns ranked drivers.
----
-## GET /ml/recommend-vehicle/{trip_id}
-Returns ranked vehicles.
----
-## GET /ml/predict-repair/{maintenance_id}
-Returns:
-* Estimated repair duration
-* Confidence
----
+
 # Search
-## GET /search
-Global search.
-Supports:
-* Vehicles
-* Drivers
-* Trips
-* Tracking IDs
-* Maintenance
-* Expenses
+
+Global search available from every page.
+
+Support:
+
+* Keyboard shortcut (⌘K / Ctrl+K)
+* Fuzzy search
+* Quick navigation
+* Quick actions
+
 ---
-# Health
-## GET /health
-Returns application status.
-Used by frontend during startup.
+
+# Notifications
+
+Use Sonner.
+
+Notification types:
+
+* Success
+* Warning
+* Error
+* Information
+
+Notification Center should maintain history.
+
 ---
-# Validation Rules
-Every endpoint must validate:
-* Required fields
-* Field lengths
-* Invalid enums
-* Invalid IDs
-* Invalid dates
-* Duplicate records
-* Business rules
-* Permissions
-Validation belongs in the backend.
+
+# Sidebar
+
+Collapsible.
+
+Animated.
+
+Remember previous state.
+
+Support icons-only mode.
+
 ---
-# Authorization
-Administrator
-Full access.
-Fleet Manager
-Fleet operations.
-Dispatcher
-Trips and dispatch.
-Safety Officer
-Drivers and maintenance.
-Financial Analyst
-Expenses and analytics.
-Driver
-Read-only access to assigned trips.
-Customer tracking endpoints require no authentication.
+
+# Breadcrumbs
+
+Show on every page except Dashboard.
+
+Keep navigation clear.
+
 ---
-# Performance Targets
-Authentication: <100 ms
-CRUD operations: <100 ms
-Dashboard: <250 ms
-Analytics: <500 ms
-Tracking: ~1 second refresh
-AI: <5 seconds
-ML inference: <500 ms
+
+# Dialogs
+
+Use shadcn Dialog.
+
+Support:
+
+* Escape key
+* Click outside to close
+* Smooth animations
+
+Dangerous actions require confirmation.
+
 ---
-# API Checklist
-* [ ] Consistent response format
-* [ ] RESTful naming
-* [ ] Backend validation
-* [ ] Permission checks
-* [ ] Business rule enforcement
-* [ ] Thin routes
-* [ ] Service layer only
-* [ ] Repository layer only accesses database
-* [ ] No duplicated logic
-* [ ] Meaningful error messages
-* [ ] Health endpoint implemented
-* [ ] Customer tracking endpoints implemented
-* [ ] Documentation updated after API changes
+
+# Cards
+
+Cards should contain:
+
+* Title
+* Optional subtitle
+* Actions
+* Content
+* Footer (optional)
+
+Consistent padding throughout.
+
+---
+
+# Empty States
+
+Every page must have meaningful empty states.
+
+Examples:
+
+No vehicles.
+
+No trips.
+
+No maintenance.
+
+No notifications.
+
+Each should include:
+
+* Illustration or icon
+* Description
+* Primary action
+
+---
+
+# Loading States
+
+Never display blank pages.
+
+Use:
+
+* Skeleton loaders
+* Progress indicators
+* Animated placeholders
+
+Avoid spinners whenever skeletons make sense.
+
+---
+
+# Maps
+
+MapLibre GL JS.
+
+Features:
+
+* Live vehicle movement
+* Driver markers
+* Route visualization
+* ETA
+* Zoom controls
+* Fullscreen
+* Current delivery information
+
+Movement must interpolate smoothly along roads.
+
+---
+
+# Customer Tracking Page
+
+Simple and elegant.
+
+Sections:
+
+* Delivery status
+* Live map
+* ETA
+* Driver information
+* Vehicle information
+* Delivery timeline
+* Progress bar
+
+No login required.
+
+Read-only.
+
+Optimized for sharing.
+
+---
+
+# Analytics
+
+Use Apache ECharts.
+
+Recommended charts:
+
+* Line
+* Bar
+* Area
+* Pie
+* Gauge
+* Heatmap
+* Radar
+* Sankey
+* Calendar Heatmap
+* Scatter
+* Treemap
+
+Every chart should support:
+
+* Hover
+* Tooltips
+* Export
+* Responsive resizing
+* Smooth transitions
+
+---
+
+# AI Assistant
+
+Dockable panel.
+
+Support:
+
+* Markdown
+* Tables
+* Code blocks
+* Suggested follow-up questions
+
+Provide quick action buttons:
+
+* Predict delay
+* Best driver
+* Maintenance prediction
+* Vehicle status
+* Explain dashboard metric
+
+---
+
+# Tracking Experience
+
+Vehicle animation should resemble Apple Maps.
+
+Include:
+
+* Smooth movement
+* Route highlighting
+* Destination marker
+* Current speed
+* Remaining distance
+* ETA updates
+
+Camera should optionally follow the active vehicle.
+
+---
+
+# Motion Guidelines
+
+Animate:
+
+* Sidebar
+* Cards
+* KPI counters
+* Charts
+* Tables
+* Dialogs
+* Drawers
+* Notifications
+* Tabs
+* Route progress
+* Vehicle movement
+
+Do not animate every UI element simultaneously.
+
+Maintain visual restraint.
+
+---
+
+# Recommended Component Libraries
+
+Primary:
+
+* shadcn/ui
+
+Additional:
+
+* shadcn Blocks
+* Origin UI
+* Motion Primitives
+* Magic UI
+* ReactBits
+
+Use Aceternity UI only if a component cannot be reasonably recreated with the above.
+
+Avoid mixing multiple visual styles.
+
+---
+
+# Recommended shadcn Components
+
+Navigation:
+
+* Sidebar
+* Breadcrumb
+* Navigation Menu
+* Command
+* Context Menu
+* Dropdown Menu
+
+Forms:
+
+* Input
+* Select
+* Combobox
+* Calendar
+* Date Picker
+* Checkbox
+* Switch
+* Radio Group
+* Textarea
+
+Layout:
+
+* Card
+* Accordion
+* Tabs
+* Separator
+* Scroll Area
+* Resizable Panels
+* Collapsible
+
+Feedback:
+
+* Sonner
+* Alert Dialog
+* Progress
+* Skeleton
+* Hover Card
+* Tooltip
+
+Data:
+
+* Data Table
+* Badge
+* Avatar
+* Pagination
+
+---
+
+# Accessibility
+
+Support:
+
+* Keyboard navigation
+* Visible focus states
+* Proper labels
+* Semantic HTML
+* Screen readers where practical
+
+Maintain sufficient color contrast.
+
+---
+
+# Performance
+
+Avoid unnecessary re-renders.
+
+Lazy-load heavy pages.
+
+Virtualize large tables if needed.
+
+Keep animations GPU-accelerated.
+
+---
+
+# UI Checklist
+
+* [ ] Apple-inspired design language
+* [ ] Dark mode
+* [ ] Smooth animations
+* [ ] Sidebar implemented
+* [ ] Dashboard polished
+* [ ] Interactive ECharts
+* [ ] Live MapLibre tracking
+* [ ] AI assistant panel
+* [ ] Customer tracking page
+* [ ] Global search
+* [ ] Empty states
+* [ ] Skeleton loading
+* [ ] Notification center
+* [ ] Responsive layout
+* [ ] Consistent spacing
+* [ ] HugeIcons used throughout
+* [ ] Documentation updated after UI changes

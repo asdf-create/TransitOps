@@ -17,7 +17,7 @@ class DriverService:
             raise ValueError(f"Driver with license number {driver_data.license_number} already exists")
         
         # Check if license is expired
-        if driver_data.license_expiry < datetime.now(timezone.utc):
+        if driver_data.license_expiry < datetime.now():
             raise ValueError("License has expired")
         
         db_driver = Driver.model_validate(driver_data)
@@ -87,4 +87,4 @@ class DriverService:
         driver = self.get_driver(driver_id)
         if not driver:
             return False
-        return driver.license_expiry < datetime.now(timezone.utc)
+        return driver.license_expiry < datetime.now()
