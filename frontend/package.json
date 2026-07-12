@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "tanstack start",
     "build": "tanstack build",
-    "start": "tanstack start"
+    "start": "tanstack start",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.0.0",
@@ -17,8 +19,8 @@
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.0.0",
-    "@types/maplibre-gl": "^4.0.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@playwright/test": "^1.40.0",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
