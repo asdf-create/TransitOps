@@ -12,6 +12,7 @@ from fuel.routes import router as fuel_router
 from expenses.routes import router as expenses_router
 from dashboard.routes import router as dashboard_router
 from analytics.routes import router as analytics_router
+from tracking.routes import router as tracking_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -42,6 +43,7 @@ app.include_router(fuel_router)
 app.include_router(expenses_router)
 app.include_router(dashboard_router)
 app.include_router(analytics_router)
+app.include_router(tracking_router)
 
 @app.get("/health")
 def health_check():
