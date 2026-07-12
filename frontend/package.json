@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tanstack start",
-    "build": "tanstack build",
-    "start": "tanstack start",
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui"
   },
