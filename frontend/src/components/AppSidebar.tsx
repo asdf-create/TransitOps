@@ -18,7 +18,7 @@ import { cn } from '../lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/tooltip'
 
 const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/vehicles', icon: Truck, label: 'Vehicles' },
   { to: '/drivers', icon: Users, label: 'Drivers' },
   { to: '/trips', icon: Route, label: 'Trips' },

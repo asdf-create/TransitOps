@@ -18,6 +18,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CustomerTrackingRouteImport } from './routes/customer-tracking'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as IndexRouteImport } from './routes/index'
 
 const VehiclesRoute = VehiclesRouteImport.update({
   id: '/vehicles',
@@ -64,8 +65,14 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/assistant': typeof AssistantRoute
   '/customer-tracking': typeof CustomerTrackingRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/vehicles': typeof VehiclesRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/assistant': typeof AssistantRoute
   '/customer-tracking': typeof CustomerTrackingRoute
@@ -89,6 +97,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/assistant': typeof AssistantRoute
   '/customer-tracking': typeof CustomerTrackingRoute
@@ -102,6 +111,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/analytics'
     | '/assistant'
     | '/customer-tracking'
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/vehicles'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/analytics'
     | '/assistant'
     | '/customer-tracking'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/vehicles'
   id:
     | '__root__'
+    | '/'
     | '/analytics'
     | '/assistant'
     | '/customer-tracking'
@@ -136,6 +148,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AssistantRoute: typeof AssistantRoute
   CustomerTrackingRoute: typeof CustomerTrackingRoute
@@ -212,10 +225,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
   AssistantRoute: AssistantRoute,
   CustomerTrackingRoute: CustomerTrackingRoute,

@@ -50,3 +50,14 @@ dist-ssr/
 *.temp
 pdf_content.txt
 read_pdf.py
+
+# Hackathon specs and agent instructions
+TASK.md
+AGENTS.md
+
+# Testing & Scratch dirs
+frontend/playwright-report/
+frontend/test-results/
+frontend/scratch/
+backend/scratch/
+scratch/
