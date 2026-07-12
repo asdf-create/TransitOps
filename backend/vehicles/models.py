@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
 from database.models import VehicleStatus
 
 class VehicleCreate(BaseModel):
+    model_config = ConfigDict(extra='forbid')
     registration_number: str
     model: str
     manufacturer: str
@@ -21,6 +22,7 @@ class VehicleCreate(BaseModel):
     notes: Optional[str] = None
 
 class VehicleUpdate(BaseModel):
+    model_config = ConfigDict(extra='forbid')
     model: Optional[str] = None
     manufacturer: Optional[str] = None
     vehicle_type: Optional[str] = None
@@ -37,6 +39,7 @@ class VehicleUpdate(BaseModel):
     notes: Optional[str] = None
 
 class VehicleResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     registration_number: str
     model: str
@@ -56,6 +59,3 @@ class VehicleResponse(BaseModel):
     notes: Optional[str]
     created_at: datetime
     updated_at: datetime
-    
-    class Config:
-        from_attributes = True

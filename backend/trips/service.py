@@ -51,7 +51,8 @@ class TripService:
         
         # Create trip with historical snapshots
         tracking_id = self.generate_tracking_id()
-        estimated_arrival = trip_data.planned_departure + timedelta(minutes=trip_data.planned_duration)
+        departure_time = trip_data.planned_departure or datetime.now()
+        estimated_arrival = departure_time + timedelta(minutes=trip_data.planned_duration)
         
         db_trip = Trip(
             tracking_id=tracking_id,
@@ -63,7 +64,7 @@ class TripService:
             cargo_weight=trip_data.cargo_weight,
             planned_distance=trip_data.planned_distance,
             planned_duration=trip_data.planned_duration,
-            planned_departure=trip_data.planned_departure,
+            planned_departure=departure_time,
             estimated_arrival=estimated_arrival,
             revenue=trip_data.revenue,
             status=TripStatus.DRAFT,

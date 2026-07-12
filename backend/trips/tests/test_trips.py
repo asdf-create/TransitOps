@@ -1,15 +1,8 @@
 import pytest
-from sqlmodel import Session
-from datetime import datetime, timedelta, timezone
-from database.connection import engine
+from datetime import datetime, timedelta
 from database.models import Vehicle, Driver, Trip, VehicleStatus, DriverStatus, TripStatus
 from trips.service import TripService
 from trips.models import TripCreate
-
-@pytest.fixture
-def session():
-    with Session(engine) as session:
-        yield session
 
 @pytest.fixture
 def trip_service(session):
@@ -40,7 +33,7 @@ def available_driver(session):
         full_name="Test Driver",
         license_number="TEST-LIC-001",
         license_category="C",
-        license_expiry=datetime.now(timezone.utc) + timedelta(days=365),
+        license_expiry=datetime.now() + timedelta(days=365),
         phone="+1234567890",
         safety_score=95.0,
         years_experience=5,
@@ -63,7 +56,7 @@ def test_create_trip(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -86,7 +79,7 @@ def test_create_trip_invalid_vehicle(trip_service, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -104,7 +97,7 @@ def test_create_trip_invalid_driver(trip_service, available_vehicle):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -138,7 +131,7 @@ def test_create_trip_retired_vehicle(session, trip_service, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -172,7 +165,7 @@ def test_create_trip_in_shop_vehicle(session, trip_service, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -206,7 +199,7 @@ def test_create_trip_vehicle_on_trip(session, trip_service, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -219,7 +212,7 @@ def test_create_trip_suspended_driver(session, trip_service, available_vehicle):
         full_name="Test Driver",
         license_number="TEST-LIC-002",
         license_category="C",
-        license_expiry=datetime.now(timezone.utc) + timedelta(days=365),
+        license_expiry=datetime.now() + timedelta(days=365),
         phone="+1234567890",
         safety_score=95.0,
         years_experience=5,
@@ -239,7 +232,7 @@ def test_create_trip_suspended_driver(session, trip_service, available_vehicle):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -252,7 +245,7 @@ def test_create_trip_expired_license(session, trip_service, available_vehicle):
         full_name="Test Driver",
         license_number="TEST-LIC-003",
         license_category="C",
-        license_expiry=datetime.now(timezone.utc) - timedelta(days=1),
+        license_expiry=datetime.now() - timedelta(days=1),
         phone="+1234567890",
         safety_score=95.0,
         years_experience=5,
@@ -272,7 +265,7 @@ def test_create_trip_expired_license(session, trip_service, available_vehicle):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -285,7 +278,7 @@ def test_create_trip_driver_on_trip(session, trip_service, available_vehicle):
         full_name="Test Driver",
         license_number="TEST-LIC-004",
         license_category="C",
-        license_expiry=datetime.now(timezone.utc) + timedelta(days=365),
+        license_expiry=datetime.now() + timedelta(days=365),
         phone="+1234567890",
         safety_score=95.0,
         years_experience=5,
@@ -305,7 +298,7 @@ def test_create_trip_driver_on_trip(session, trip_service, available_vehicle):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -323,7 +316,7 @@ def test_create_trip_exceeds_capacity(trip_service, available_vehicle, available
         cargo_weight=10000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -341,7 +334,7 @@ def test_dispatch_trip(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -362,7 +355,7 @@ def test_dispatch_trip_status_changes(trip_service, available_vehicle, available
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -388,7 +381,7 @@ def test_dispatch_non_draft_trip(trip_service, available_vehicle, available_driv
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -411,7 +404,7 @@ def test_complete_trip(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -436,7 +429,7 @@ def test_complete_trip_status_restoration(trip_service, available_vehicle, avail
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -462,7 +455,7 @@ def test_complete_trip_updates_odometer(trip_service, available_vehicle, availab
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -488,7 +481,7 @@ def test_complete_trip_updates_driver_stats(trip_service, available_vehicle, ava
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -516,7 +509,7 @@ def test_cancel_trip(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -536,7 +529,7 @@ def test_cancel_dispatched_trip_restores_status(trip_service, available_vehicle,
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -562,7 +555,7 @@ def test_double_completion(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -584,7 +577,7 @@ def test_invalid_distance(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=-100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -602,7 +595,7 @@ def test_missing_destination(trip_service, available_vehicle, available_driver):
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -620,7 +613,7 @@ def test_historical_snapshots(trip_service, available_vehicle, available_driver)
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -642,7 +635,7 @@ def test_tracking_id_generation(trip_service, available_vehicle, available_drive
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -685,7 +678,7 @@ def test_get_trip_by_tracking_id(trip_service, available_vehicle, available_driv
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     
@@ -707,7 +700,7 @@ def test_get_trip_with_filters(trip_service, available_vehicle, available_driver
         cargo_weight=3000.0,
         planned_distance=100.0,
         planned_duration=120,
-        planned_departure=datetime.now(timezone.utc),
+        planned_departure=datetime.now(),
         revenue=500.0
     )
     

@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
 from database.models import TripStatus
 
 class TripCreate(BaseModel):
+    model_config = ConfigDict(extra='forbid')
     source: str
     destination: str
     vehicle_id: int
@@ -12,10 +13,11 @@ class TripCreate(BaseModel):
     cargo_weight: float = Field(gt=0)
     planned_distance: float = Field(gt=0)
     planned_duration: int = Field(gt=0)
-    planned_departure: datetime
+    planned_departure: Optional[datetime] = None
     revenue: float = Field(gt=0)
 
 class TripUpdate(BaseModel):
+    model_config = ConfigDict(extra='forbid')
     source: Optional[str] = None
     destination: Optional[str] = None
     cargo_description: Optional[str] = None
@@ -32,6 +34,7 @@ class TripUpdate(BaseModel):
     status: Optional[TripStatus] = None
 
 class TripResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     tracking_id: str
     source: str
@@ -57,6 +60,3 @@ class TripResponse(BaseModel):
     driver_name: Optional[str]
     vehicle_registration: Optional[str]
     driver_license_number: Optional[str]
-    
-    class Config:
-        from_attributes = True

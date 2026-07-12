@@ -1,14 +1,7 @@
 import pytest
-from sqlmodel import Session
-from database.connection import engine
 from database.models import Vehicle, VehicleStatus
 from vehicles.service import VehicleService
 from vehicles.models import VehicleCreate, VehicleUpdate
-
-@pytest.fixture
-def session():
-    with Session(engine) as session:
-        yield session
 
 @pytest.fixture
 def vehicle_service(session):
